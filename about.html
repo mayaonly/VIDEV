@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>About &amp; Team — VIDEV MEDIA</title>
+  <style>
+    :root {
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      --bg: #050505;
+      --bg2: #0d0d0e;
+      --card: #111113;
+      --line: #222226;
+      --tx: #f4f4f5;
+      --mut: #9a9aa3;
+      --silver: linear-gradient(135deg, #fff 0%, #c9cbd1 45%, #8d9098 100%);
+      --ac: #d9dbe0;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: env(safe-area-inset-top, 0px); }
+    body {
+      background: var(--bg); color: var(--tx);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      line-height: 1.55; overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    .w { max-width: 1160px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 2; }
+    section { padding: 96px 0; position: relative; }
+    .eyebrow {
+      display: inline-block; font-size: 12px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--mut); border: 1px solid var(--line);
+      border-radius: 99px; padding: 6px 14px; margin-bottom: 20px;
+    }
+    h1, h2, h3 { letter-spacing: -0.02em; line-height: 1.08; }
+    h2 { font-size: clamp(30px, 4.5vw, 48px); margin-bottom: 14px; }
+    .sub { color: var(--mut); max-width: 620px; font-size: 18px; }
+    .silver {
+      background: var(--silver);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px;
+      border-radius: 99px; font-weight: 600; font-size: 15px; border: 1px solid var(--line);
+      transition: 0.2s; cursor: pointer; background: none; color: var(--tx); font-family: inherit;
+      will-change: transform;
+    }
+    .btn.p { background: var(--silver); color: #050505; border: 0; }
+    .btn.p:hover { filter: brightness(1.12); }
+    .btn.g:hover { border-color: #6b6d75; background: #141416; }
+    .btn.sm { padding: 10px 20px; font-size: 14px; }
+
+    /* nav */
+    nav {
+      position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+      background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    nav .w { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; }
+    .logo i {
+      width: 32px; height: 32px; border-radius: 9px; background: var(--silver);
+      display: grid; place-items: center; color: #050505; font-style: normal; font-size: 13px;
+    }
+    .links { display: flex; gap: 28px; align-items: center; color: var(--mut); font-size: 15px; }
+    .links a:hover { color: var(--tx); }
+    .links a.active { color: var(--tx); }
+    @media(max-width: 820px) { .links .l { display: none; } }
+
+    /* page hero */
+    .page-hero {
+      position: relative; overflow: hidden; padding: 100px 0 80px; text-align: center;
+      border-bottom: 1px solid var(--line);
+    }
+    .page-hero .reel { position: absolute; inset: 0; background: #070708; overflow: hidden; }
+    .page-hero .reel canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .page-hero .reel:after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(5,5,5,0.5), var(--bg));
+    }
+    .page-hero h1 { font-size: clamp(38px, 6.4vw, 72px); max-width: 900px; margin: 0 auto 22px; }
+    .page-hero .sub { margin: 0 auto 32px; }
+    .page-hero .ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* scroll glow */
+    body::before {
+      content: ""; position: fixed; top: var(--scroll-glow, 20%); left: 50%;
+      width: 800px; height: 800px; transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(180,185,200,0.07), transparent 60%);
+      pointer-events: none; z-index: 0; transition: top 0.4s ease-out;
+    }
+
+    /* reveal */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.9s cubic-bezier(0.16,1,0.3,1);
+      will-change: opacity, transform;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* floating chips */
+    .growth-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+    .float-chip {
+      position: absolute; left: var(--x, 5%); top: var(--y, 10%);
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 14px 8px 8px;
+      background: rgba(17, 17, 19, 0.75);
+      border: 1px solid var(--line); border-radius: 99px;
+      backdrop-filter: blur(10px); font-size: 13px; color: var(--mut);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      animation: float-bob 6s ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+      will-change: transform; pointer-events: none;
+    }
+    .float-chip img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid var(--line); }
+    .float-chip b { color: var(--tx); font-weight: 700; }
+    .float-chip .up { color: #4ade80; font-size: 11px; margin-left: 2px; }
+    .float-chip .up::before { content: "▲ "; }
+    @keyframes float-bob {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-12px); }
+    }
+    @media(max-width: 820px) { .growth-layer { display: none; } }
+
+    /* live badge */
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--line);
+      padding: 6px 14px; border-radius: 99px;
+      font-size: 13px; color: var(--mut); margin-bottom: 20px;
+    }
+    .pulse {
+      width: 8px; height: 8px; border-radius: 50%; background: #4ade80;
+      box-shadow: 0 0 0 0 rgba(74,222,128,0.7);
+      animation: pulse 2s infinite; flex-shrink: 0;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(74,222,128,0); }
+      100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+    }
+
+    /* section label */
+    .section-label {
+      display: flex; align-items: center; gap: 20px; margin-bottom: 56px;
+    }
+    .section-label .num {
+      font-size: 13px; color: var(--mut); font-family: ui-monospace, monospace;
+      letter-spacing: 0.1em; flex-shrink: 0;
+    }
+    .section-label .line { height: 1px; background: var(--line); flex: 1; }
+
+    /* ============================================================
+       STORY SECTION
+       ============================================================ */
+    .story {
+      display: grid; grid-template-columns: 1.1fr 1fr; gap: 60px; align-items: center;
+    }
+    @media(max-width: 900px) { .story { grid-template-columns: 1fr; gap: 40px; } }
+
+    .story-text p {
+      color: var(--mut); font-size: 17px; margin-bottom: 18px; max-width: 560px;
+    }
+    .story-text p:last-child { margin-bottom: 0; }
+    .story-text p b { color: var(--tx); font-weight: 600; }
+
+    .story-stats {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+      margin-top: 32px;
+    }
+    .story-stat {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 16px; padding: 20px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .story-stat:hover { border-color: #5d5f66; transform: translateY(-3px); }
+    .story-stat strong {
+      display: block; font-size: 30px; letter-spacing: -0.03em;
+      background: var(--silver); -webkit-background-clip: text; background-clip: text;
+      color: transparent; margin-bottom: 4px;
+    }
+    .story-stat span { color: var(--mut); font-size: 13px; }
+
+    .story-visual {
+      position: relative; border-radius: 24px; overflow: hidden;
+      border: 1px solid var(--line); aspect-ratio: 4/5;
+      background: linear-gradient(135deg, #1a1a1d, #0a0a0b);
+    }
+    .story-visual img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      opacity: 0.85; transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+    .story-visual:hover img { transform: scale(1.05); }
+    .story-visual::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(5,5,5,0.85) 100%);
+      pointer-events: none;
+    }
+    .story-quote {
+      position: absolute; left: 24px; right: 24px; bottom: 24px; z-index: 2;
+      font-size: 15px; color: #f4f4f5; line-height: 1.5;
+    }
+    .story-quote b { display: block; color: var(--mut); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 8px; font-weight: 600; }
+
+    /* ============================================================
+       MISSION SECTION
+       ============================================================ */
+    .mission {
+      background: linear-gradient(135deg, #17171a, #0a0a0b);
+      border: 1px solid var(--line); border-radius: 28px;
+      padding: 56px; position: relative; overflow: hidden;
+      isolation: isolate;
+    }
+    @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+    .mission::before {
+      content: ""; position: absolute; inset: -1px; border-radius: inherit;
+      padding: 1px;
+      background: conic-gradient(from var(--angle),
+        transparent 0%, #d9dbe0 20%, transparent 40%, #d9dbe0 60%, transparent 80%, #d9dbe0 100%);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: spin-border 8s linear infinite;
+      pointer-events: none; opacity: 0.5; z-index: 2;
+    }
+    @keyframes spin-border { to { --angle: 360deg; } }
+    .mission::after {
+      content: ""; position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80&auto=format&fit=crop') center/cover;
+      opacity: 0.06; z-index: 0;
+    }
+    .mission > * { position: relative; z-index: 1; }
+    @media(max-width: 800px) { .mission { padding: 32px; } }
+    .mission h2 { margin-bottom: 20px; max-width: 800px; }
+    .mission .lead {
+      font-size: clamp(18px, 2vw, 22px); color: var(--tx);
+      max-width: 820px; margin-bottom: 24px; line-height: 1.5;
+    }
+    .mission .body { color: var(--mut); font-size: 16px; max-width: 780px; margin-bottom: 14px; }
+
+    .mission-pillars {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+      margin-top: 40px;
+    }
+    @media(max-width: 800px) { .mission-pillars { grid-template-columns: 1fr; } }
+    .pillar {
+      background: #0b0b0c; border: 1px solid var(--line);
+      border-radius: 16px; padding: 22px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .pillar:hover { border-color: #5d5f66; transform: translateY(-4px); }
+    .pillar-icon {
+      width: 42px; height: 42px; border-radius: 12px;
+      border: 1px solid var(--line); background: #111113;
+      display: grid; place-items: center; margin-bottom: 16px;
+    }
+    .pillar-icon svg { width: 20px; height: 20px; stroke: var(--ac); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .pillar h3 { font-size: 18px; margin-bottom: 6px; }
+    .pillar p { color: var(--mut); font-size: 14px; }
+
+    /* ============================================================
+       TEAM SECTION
+       ============================================================ */
+    .team-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+    }
+    @media(max-width: 1000px) { .team-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media(max-width: 760px)  { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media(max-width: 480px)  { .team-grid { grid-template-columns: 1fr; } }
+
+    .tm {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 20px; overflow: hidden;
+      transition: border-color 0.3s, transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s;
+      position: relative;
+    }
+    .tm:hover {
+      border-color: #5d5f66; transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+    .tm-photo {
+      position: relative; aspect-ratio: 1/1; overflow: hidden;
+      background: #0a0a0b;
+    }
+    .tm-photo img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      filter: grayscale(0.4) contrast(1.05);
+      transition: transform 0.7s cubic-bezier(0.16,1,0.3,1), filter 0.4s;
+    }
+    .tm:hover .tm-photo img { transform: scale(1.06); filter: grayscale(0) contrast(1); }
+    .tm-photo::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.65) 100%);
+      pointer-events: none;
+    }
+    .tm-role-tag {
+      position: absolute; top: 12px; left: 12px; z-index: 2;
+      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+      background: rgba(5,5,5,0.7); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 4px 10px; border-radius: 99px; color: #d0d0d8;
+    }
+    .tm-body { padding: 20px; }
+    .tm-body h3 { font-size: 18px; margin-bottom: 4px; }
+    .tm-body .role {
+      font-size: 13px; color: var(--ac); letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+    .tm-body p {
+      font-size: 14px; color: var(--mut); line-height: 1.5;
+    }
+
+    /* ============================================================
+       VALUES SECTION
+       ============================================================ */
+    .values-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+    }
+    @media(max-width: 1000px) { .values-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media(max-width: 560px)  { .values-grid { grid-template-columns: 1fr; } }
+
+    .value {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 20px; padding: 28px;
+      transition: border-color 0.3s, transform 0.35s, background 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .value:hover { border-color: #5d5f66; transform: translateY(-4px); background: #151518; }
+    .value::after {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(400px circle at var(--mx, 50%) var(--my, 50%),
+                  rgba(255,255,255,0.07), transparent 40%);
+      opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    }
+    .value:hover::after { opacity: 1; }
+    .value-num {
+      font-size: 44px; font-weight: 700; letter-spacing: -0.03em;
+      background: var(--silver);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      display: block; margin-bottom: 12px;
+      font-family: ui-monospace, monospace;
+    }
+    .value h3 { font-size: 19px; margin-bottom: 10px; }
+    .value p { color: var(--mut); font-size: 14px; line-height: 1.55; }
+
+    /* ============================================================
+       TIMELINE (mini)
+       ============================================================ */
+    .timeline {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+      margin-top: 20px;
+    }
+    @media(max-width: 900px) { .timeline { grid-template-columns: 1fr 1fr; } }
+    @media(max-width: 560px) { .timeline { grid-template-columns: 1fr; } }
+    .tl-item {
+      border-top: 1px solid #3a3a40; padding-top: 20px;
+      transition: border-color 0.3s;
+    }
+    .tl-item:hover { border-top-color: #d9dbe0; }
+    .tl-item .year {
+      font-size: 13px; color: var(--mut); font-family: ui-monospace, monospace;
+      letter-spacing: 0.08em; margin-bottom: 8px;
+    }
+    .tl-item h4 { font-size: 17px; margin-bottom: 6px; }
+    .tl-item p { color: var(--mut); font-size: 14px; }
+
+    /* final CTA */
+    .final {
+      text-align: center; padding: 120px 0;
+      background: radial-gradient(50% 60% at 50% 100%, rgba(200, 203, 210, 0.16), transparent 70%);
+      position: relative;
+    }
+    .final h2 { font-size: clamp(34px, 6vw, 68px); max-width: 760px; margin: 0 auto 18px; }
+    .final .sub { margin: 0 auto 32px; }
+    .final h2 .silver {
+      background: linear-gradient(90deg, #8d9098 0%, #fff 50%, #8d9098 100%);
+      background-size: 200% 100%; -webkit-background-clip: text; background-clip: text;
+      color: transparent; animation: sweep 4s ease-in-out infinite;
+    }
+    @keyframes sweep {
+      0%, 100% { background-position: 200% 0; }
+      50% { background-position: -200% 0; }
+    }
+    .ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    footer { border-top: 1px solid var(--line); padding: 32px 0; color: var(--mut); font-size: 14px; position: relative; z-index: 1; }
+    footer .w { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="w">
+    <a class="logo" href="#"><i>▶</i>VIDEV MEDIA</a>
+    <div class="links">
+      <a class="l" href="services.html">Services</a>
+      <a class="l" href="portfolio.html">Work</a>
+      <a class="l" href="about.html">About</a>
+      <a class="l" href="contact.html">Contact</a>
+      <a class="l" href="client-portal.html">Client Portal</a>
+      <a class="btn p" style="padding:10px 20px" href="quote.html">Get a Quote</a>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<header class="page-hero">
+  <div class="reel"><canvas id="fx"></canvas></div>
+  <div class="w">
+    <span class="eyebrow">About VIDEV MEDIA</span>
+    <h1>A studio built <span class="silver">by creators, for creators.</span></h1>
+    <p class="sub">We're a small team of editors, strategists and producers helping YouTube channels grow with work that's fast, sharp and consistent.</p>
+    <div class="ctas">
+      <a class="btn p" href="#team">Meet the Team →</a>
+      <a class="btn g" href="#cta">Work With Us</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     STORY
+     ============================================================ -->
+<section id="story">
+  <div class="growth-layer">
+    <div class="float-chip" style="--x: 4%; --y: 20%; --delay: 0s;">
+      <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=60&q=80" alt="">
+      <span><b>2019</b> founded <span class="up">started</span></span>
+    </div>
+    <div class="float-chip" style="--x: 88%; --y: 70%; --delay: 1.4s;">
+      <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=60&q=80" alt="">
+      <span><b>250M+</b> views produced</span>
+    </div>
+  </div>
+
+  <div class="w">
+    <div class="section-label reveal">
+      <span class="num">01 / OUR STORY</span>
+      <span class="line"></span>
+    </div>
+
+    <div class="story">
+      <div class="story-text reveal">
+        <span class="eyebrow">How it started</span>
+        <h2>From one editing bay <span class="silver">to a full production studio.</span></h2>
+        <p>VIDEV MEDIA started in 2019 as a single freelance editor working out of a bedroom with a mid-range laptop and a stubborn belief that YouTube editing could be <b>faster, sharper and less painful</b> than what most creators were settling for.</p>
+        <p>Six years later we're a full-service YouTube production agency — editing, scripting, packaging, Shorts systems, full shoots and channel management — supporting <b>120+ creators</b> across commentary, documentary, podcast, review and tech.</p>
+        <p>We're still small on purpose. Every channel we take on gets a real team behind it, not a queue number.</p>
+
+        <div class="story-stats">
+          <div class="story-stat">
+            <strong>2019</strong>
+            <span>Founded in London</span>
+          </div>
+          <div class="story-stat">
+            <strong>120+</strong>
+            <span>Creators served</span>
+          </div>
+          <div class="story-stat">
+            <strong>3,500+</strong>
+            <span>Videos delivered</span>
+          </div>
+          <div class="story-stat">
+            <strong>250M+</strong>
+            <span>Views produced</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-visual reveal">
+        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80&auto=format&fit=crop" alt="VIDEV MEDIA studio">
+        <div class="story-quote">
+          “We don't sell edits. We sell a channel that finally feels consistent.”
+          <b>— Founders, VIDEV MEDIA</b>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MISSION
+     ============================================================ -->
+<section style="background:var(--bg2);border-block:1px solid var(--line);">
+  <div class="w">
+    <div class="section-label reveal">
+      <span class="num">02 / MISSION</span>
+      <span class="line"></span>
+    </div>
+
+    <div class="mission reveal">
+      <span class="eyebrow">Our mission</span>
+      <h2>Make great channels <span class="silver">impossible to ignore.</span></h2>
+      <p class="lead">Every creator we work with should feel like they've got a real production team behind them — not a freelancer, not a queue, not a black box.</p>
+      <p class="body">We exist to take the operational weight off creators so they can focus on the part only they can do: being on camera, having the ideas, building the audience. Everything else — scripting, editing, packaging, publishing, analytics, sponsorships — we handle.</p>
+
+      <div class="mission-pillars">
+        <div class="pillar">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>
+          </div>
+          <h3>Speed</h3>
+          <p>Edits delivered on schedule, every upload. No chasing, no delays.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg>
+          </div>
+          <h3>Craft</h3>
+          <p>Retention-first pacing, real sound design and packaging that earns the click.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+          </div>
+          <h3>Results</h3>
+          <p>Every decision tracked. We report on retention, CTR and channel growth — not vanity metrics.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TEAM
+     ============================================================ -->
+<section id="team">
+  <div class="growth-layer">
+    <div class="float-chip" style="--x: 6%; --y: 15%; --delay: 0.6s;">
+      <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=60&q=80" alt="">
+      <span><b>8</b> in-house <span class="up">team</span></span>
+    </div>
+  </div>
+
+  <div class="w">
+    <div class="section-label reveal">
+      <span class="num">03 / THE TEAM</span>
+      <span class="line"></span>
+    </div>
+
+    <div class="head reveal" style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:44px;">
+      <div>
+        <span class="eyebrow">Who you'll work with</span>
+        <h2>A small team that actually ships.</h2>
+        <p class="sub">Editors, producers, strategists and designers — all in-house, all on your channel.</p>
+      </div>
+      <span class="live-badge"><span class="pulse"></span> Hiring 1 editor · Q1 2026</span>
+    </div>
+
+    <div class="team-grid">
+
+      <!-- 1 -->
+      <article class="tm reveal">
+        <div class="tm-photo">
+          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80&auto=format&fit=crop" alt="Daniel Okafor">
+          <span class="tm-role-tag">Founder</span>
+        </div>
+        <div class="tm-body">
+          <h3>Daniel Okafor</h3>
+          <div class="role">Founder &amp; Creative Director</div>
+          <p>Started VIDEV MEDIA as a solo editor in 2019. Leads creative direction, scripting and the studio's highest-stakes edits.</p>
+        </div>
+      </article>
+
+      <!-- 2 -->
+      <article class="tm reveal">
+        <div class="tm-photo">
+          <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&q=80&auto=format&fit=crop" alt="Maya Reyes">
+          <span class="tm-role-tag">Strategy</span>
+        </div>
+        <div class="tm-body">
+          <h3>Maya Reyes</h3>
+          <div class="role">Head of Strategy</div>
+          <p>Runs research, positioning and channel growth for every client. Ex-creator with 900K subs in the review niche.</p>
+        </div>
+      </article>
+
+      <!-- 3 -->
+      <article class="tm reveal">
+        <div class="tm-photo">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80&auto=format&fit=crop" alt="Theo Lindgren">
+          <span class="tm-role-tag">Editing</span>
+        </div>
+        <div class="tm-body">
+          <h3>Theo Lindgren</h3>
+          <div class="role">Lead Editor — Long-form</div>
+          <p>Documentary and commentary specialist. Builds the retention-first edits behind our highest-performing client uploads.</p>
+        </div>
+      </article>
+
+      <!-- 4 -->
+      <article class="tm reveal">
+        <div class="tm-photo">
+          <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&q=80&auto=format&fit=crop" alt="Priya Shah">
+          <span class="tm-role-tag">Shorts</span>
+        </div>
+        <div class="tm-body">
+          <h3>Priya Shah</h3>
+          <div class="role">Shorts Lead</div>
+          <p>Runs the vertical pipeline. Turns long-form uploads into Shorts that actually hit — hooks, captions and cadence.</p>
+        </div>
+      </article>
+
+      <!-- 5 -->
+      <article class="tm reveal">
+        <div class="tm-photo">
+          <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=600&q=80&auto=format&fit=crop" alt="Marcus Chen">
+          <span class="tm-role-tag">Production</span>
+        </div>
+        <div class="tm-body">
+          <h3>Marcus Chen</h3>
+          <div class="role">Production Lead</div>
+          <p>Directs full-production shoots — docs, podcasts and on-location series. Runs crew, gear and delivery end to end.</p>
+        </div>
+      </article>
+
+      <!-- 6 -->
+      <article class="tm reveal">
+        <div class="tm-photo">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80&auto=format&fit=crop" alt="Sofia Almeida">
+          <span class="tm-role-tag">Design</span>
+        </div>
+        <div class="tm-body">
+          <h3>Sofia Almeida</h3>
+          <div class="role">Thumbnails &amp; Brand Design</div>
+          <p>Designs the packaging system — thumbnails, typography and channel branding. Runs A/B testing across every client.</p>
+        </div>
+      </article>
+
+      <!-- 7 -->
+      <article class="tm reveal">
+        <div class="tm-photo">
+          <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&q=80&auto=format&fit=crop" alt="Ethan Brooks">
+          <span class="tm-role-tag">Talent</span>
+        </div>
+        <div class="tm-body">
+          <h3>Ethan Brooks</h3>
+          <div class="role">Talent &amp; Sponsorship</div>
+          <p>Runs brand matching, negotiation and campaign delivery for the talent roster. 80+ brands in the network.</p>
+        </div>
+      </article>
+
+      <!-- 8 -->
+      <article class="tm reveal">
+        <div class="tm-photo">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&q=80&auto=format&fit=crop" alt="Amara Diallo">
+          <span class="tm-role-tag">Producer</span>
+        </div>
+        <div class="tm-body">
+          <h3>Amara Diallo</h3>
+          <div class="role">Producer &amp; Client Success</div>
+          <p>Your day-to-day contact. Handles scheduling, feedback, delivery and every timestamped note in the portal.</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     VALUES
+     ============================================================ -->
+<section style="background:var(--bg2);border-block:1px solid var(--line);">
+  <div class="w">
+    <div class="section-label reveal">
+      <span class="num">04 / VALUES</span>
+      <span class="line"></span>
+    </div>
+
+    <div class="head reveal" style="margin-bottom:44px;">
+      <div>
+        <span class="eyebrow">How we work</span>
+        <h2>Four rules we don't break.</h2>
+        <p class="sub">Everything about how VIDEV MEDIA runs comes down to these.</p>
+      </div>
+    </div>
+
+    <div class="values-grid">
+
+      <div class="value reveal">
+        <span class="value-num">01</span>
+        <h3>Ship on time.</h3>
+        <p>If we say Friday, it's Friday. Deadlines aren't a target, they're the baseline for the whole relationship.</p>
+      </div>
+
+      <div class="value reveal">
+        <span class="value-num">02</span>
+        <h3>No black boxes.</h3>
+        <p>You see every draft, every comment, every decision in your portal. Nothing goes live without your sign-off.</p>
+      </div>
+
+      <div class="value reveal">
+        <span class="value-num">03</span>
+        <h3>Retention over polish.</h3>
+        <p>A beautiful edit that loses viewers is a failure. Every cut, sound and beat is judged on whether it holds attention.</p>
+      </div>
+
+      <div class="value reveal">
+        <span class="value-num">04</span>
+        <h3>Treat channels like ours.</h3>
+        <p>We only take on work we'd be proud to run on our own channel. If we don't believe in the fit, we'll say so.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TIMELINE
+     ============================================================ -->
+<section id="journey">
+  <div class="w">
+    <div class="section-label reveal">
+      <span class="num">05 / JOURNEY</span>
+      <span class="line"></span>
+    </div>
+
+    <div class="head reveal" style="margin-bottom:44px;">
+      <div>
+        <span class="eyebrow">Milestones</span>
+        <h2>Six years in.</h2>
+        <p class="sub">From one editor to a full YouTube production agency.</p>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <div class="year">2019</div>
+        <h4>Founded</h4>
+        <p>Started as a solo editing studio in London with two creator clients.</p>
+      </div>
+      <div class="tl-item reveal">
+        <div class="year">2021</div>
+        <h4>First 100M views</h4>
+        <p>Crossed 100M lifetime views produced across the client roster.</p>
+      </div>
+      <div class="tl-item reveal">
+        <div class="year">2023</div>
+        <h4>Full production &amp; talent</h4>
+        <p>Launched on-location production and a talent &amp; sponsorship division.</p>
+      </div>
+      <div class="tl-item reveal">
+        <div class="year">2026</div>
+        <h4>VIDEV MEDIA today</h4>
+        <p>120+ creators served, 3,500+ videos delivered, 250M+ views produced.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final" id="cta">
+  <div class="w">
+    <span class="live-badge reveal"><span class="pulse"></span> Accepting new clients · Q1 2026</span>
+    <h2 class="reveal">Let's build <span class="silver">your channel</span> together.</h2>
+    <p class="sub reveal" style="margin:0 auto 32px">Tell us about your channel and get a tailored quote within 24 hours.</p>
+    <div class="ctas reveal">
+      <a class="btn p" href="#">Get a Quote</a>
+      <a class="btn g" href="#">Book a Call</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="w">
+    <span>© 2026 VIDEV MEDIA</span>
+    <span>Services · Work · Talent · About · Contact</span>
+  </div>
+</footer>
+
+<script>
+  /* ===================== HERO CANVAS ===================== */
+  (function() {
+    const c = document.getElementById('fx'), x = c.getContext('2d');
+    if (!c) return;
+    let W, H;
+    const rs = () => { W = c.width = c.clientWidth / 2; H = c.height = c.clientHeight / 2; };
+    rs();
+    addEventListener('resize', rs);
+    const B = [...Array(5)].map((_, i) => ({
+      a: i * 1.3, s: 0.0004 + i * 0.00013, r: 0.35 + i * 0.06, l: 150 + i * 20
+    }));
+    const red = matchMedia('(prefers-reduced-motion:reduce)').matches;
+    function d(t) {
+      x.fillStyle = '#070708'; x.fillRect(0, 0, W, H);
+      B.forEach(b => {
+        const a = b.a + t * b.s,
+          px = W * (0.5 + 0.4 * Math.cos(a)),
+          py = H * (0.5 + 0.35 * Math.sin(a * 1.3)),
+          r = Math.max(W, H) * b.r;
+        const g = x.createRadialGradient(px, py, 0, px, py, r);
+        g.addColorStop(0, 'rgba(' + b.l + ',' + b.l + ',' + (b.l + 8) + ',.28)');
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        x.fillStyle = g; x.fillRect(0, 0, W, H);
+      });
+      const sx = ((t * 0.00006) % 1.6 - 0.3) * W;
+      const g2 = x.createLinearGradient(sx - W * 0.15, 0, sx + W * 0.15, H);
+      g2.addColorStop(0, 'rgba(255,255,255,0)');
+      g2.addColorStop(0.5, 'rgba(255,255,255,.08)');
+      g2.addColorStop(1, 'rgba(255,255,255,0)');
+      x.fillStyle = g2; x.fillRect(0, 0, W, H);
+      if (!red) requestAnimationFrame(d);
+    }
+    requestAnimationFrame(d);
+  })();
+
+  /* ===================== SCROLL REVEAL ===================== */
+  (function() {
+    const ro = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('in'), i * 70);
+          ro.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+  })();
+
+  /* ===================== CURSOR SPOTLIGHT ON VALUES ===================== */
+  document.querySelectorAll('.value').forEach(el => {
+    el.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+
+  /* ===================== MAGNETIC BUTTONS ===================== */
+  document.querySelectorAll('.btn.p').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width / 2) * 0.22;
+      const y = (e.clientY - r.top - r.height / 2) * 0.22;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    btn.addEventListener('mouseleave', () => btn.style.transform = '');
+  });
+
+  /* ===================== SCROLL AMBIENT GLOW ===================== */
+  (function() {
+    let ticking = false;
+    function updateGlow() {
+      const p = scrollY / Math.max(1, document.body.scrollHeight - innerHeight);
+      document.body.style.setProperty('--scroll-glow', (20 + p * 65) + '%');
+      ticking = false;
+    }
+    addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(updateGlow); ticking = true; }
+    }, { passive: true });
+  })();
+
+  /* ===================== FLOATING CHIPS PARALLAX ===================== */
+  (function() {
+    const floats = document.querySelectorAll('.float-chip');
+    addEventListener('scroll', () => {
+      const y = scrollY;
+      floats.forEach((el, i) => {
+        const speed = (i % 3 + 1) * 0.04;
+        el.style.marginTop = (-y * speed) + 'px';
+      });
+    }, { passive: true });
+  })();
+</script>
+</body>
+</html>
